@@ -134,5 +134,153 @@
 
     <h3>por enquanto é isso! novas areas de escola serão adicionadas depois! feito por: Leonardo Gomes</h3>
     <a href="sobre.html">veja o sobre!</a>
+
+        <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Comentários (LocalStorage)</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    background: #4CAF50;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+.comentario {
+    background: #f9f9f9;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #4CAF50;
+}
+
+.nome {
+    font-weight: bold;
+}
+
+.data {
+    font-size: 12px;
+    color: gray;
+}
+
+.excluir {
+    float: right;
+    color: red;
+    cursor: pointer;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Deixe seu comentário</h2>
+
+    <input type="text" id="nome" placeholder="Seu nome">
+    <textarea id="mensagem" rows="4" placeholder="Escreva seu comentário..."></textarea>
+    <button onclick="adicionarComentario()">Comentar</button>
+
+    <div id="listaComentarios"></div>
+</div>
+
+<script>
+function carregarComentarios() {
+    const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+    const lista = document.getElementById("listaComentarios");
+    lista.innerHTML = "";
+
+    comentarios.forEach((comentario, index) => {
+        const comentarioDiv = document.createElement("div");
+        comentarioDiv.classList.add("comentario");
+
+        comentarioDiv.innerHTML = `
+            <span class="excluir" onclick="excluirComentario(${index})">Excluir</span>
+            <div class="nome">${comentario.nome}</div>
+            <div class="data">${comentario.data}</div>
+            <p>${comentario.mensagem}</p>
+        `;
+
+        lista.prepend(comentarioDiv);
+    });
+}
+
+function adicionarComentario() {
+    const nome = document.getElementById("nome").value.trim();
+    const mensagem = document.getElementById("mensagem").value.trim();
+
+    if (nome === "" || mensagem === "") {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    const novoComentario = {
+        nome: nome,
+        mensagem: mensagem,
+        data: new Date().toLocaleString()
+    };
+
+    const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+    comentarios.push(novoComentario);
+    localStorage.setItem("comentarios", JSON.stringify(comentarios));
+
+    document.getElementById("nome").value = "";
+    document.getElementById("mensagem").value = "";
+
+    carregarComentarios();
+}
+
+function excluirComentario(index) {
+    const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+    comentarios.splice(index, 1);
+    localStorage.setItem("comentarios", JSON.stringify(comentarios));
+    carregarComentarios();
+}
+
+window.onload = carregarComentarios;
+</script>
+
+
 </body>
 </html>
